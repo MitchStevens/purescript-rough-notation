@@ -1,0 +1,37 @@
+package:
+  dependencies:
+    - aff
+    - console
+    - datetime
+    - effect
+    - maybe
+    - nullable
+    - prelude
+    - unsafe-coerce
+    - web-dom
+  name: rough-notation
+  test:
+    main: Test.Main
+    dependencies:
+      - web-html
+      - partial
+
+  bundle:
+    minify: false
+    module: Test.Main
+    outfile: "test/script.js"
+    platform: browser
+    type: "app"
+  publish:
+    version: 1.0.0
+    license: MIT
+    include:
+      - "src/**/*.purs src/**/*.js"
+    location:
+      githubOwner: MitchStevens
+      githubRepo: purescript-rough-notation
+
+workspace:
+  extra_packages: {}
+  package_set:
+    url: https://raw.githubusercontent.com/purescript/package-sets/psc-0.15.14-20240204/packages.json
