@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "build": "spago build",
+    "test": "spago bundle"
+  },
+  "dependencies": {
+    "rough-notation": "^0.5.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.20.0",
+    "spago": "next"
+  }
+}
