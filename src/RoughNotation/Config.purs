@@ -5,7 +5,6 @@ import Prelude
 import Data.Maybe (maybe)
 import Data.Nullable (Nullable, toMaybe)
 import Data.Time.Duration (Milliseconds(..))
-import Data.Tuple.Nested (Tuple4)
 import Prim.Row (class Union)
 import Record.Unsafe (unsafeGet, unsafeSet)
 import Unsafe.Coerce (unsafeCoerce)
@@ -27,8 +26,6 @@ instance Show RoughAnnotationType where
     StrikeThrough -> "strike-through"
     CrossedOff -> "crossed-off"
     Bracket -> "bracket"
-
-type FullPadding = Tuple4 Number Number Number Number
 
 data RoughPadding
   = Padding Number

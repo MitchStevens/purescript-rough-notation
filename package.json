@@ -1,7 +1,8 @@
 {
   "scripts": {
     "build": "spago build",
-    "test": "spago bundle"
+    "test": "spago bundle",
+    "publish": "spago publish"
   },
   "dependencies": {
     "rough-notation": "^0.5.1"

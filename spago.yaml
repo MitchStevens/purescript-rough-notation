@@ -1,14 +1,13 @@
 package:
   dependencies:
-    - aff
-    - console
-    - datetime
-    - effect
-    - maybe
-    - nullable
-    - prelude
-    - unsafe-coerce
-    - web-dom
+    - aff: "*"
+    - datetime: "*"
+    - effect: "*"
+    - maybe: "*"
+    - nullable: "*"
+    - prelude: "*"
+    - unsafe-coerce: "*"
+    - web-dom: "*"
   name: rough-notation
   test:
     main: Test.Main
@@ -33,5 +32,3 @@ package:
 
 workspace:
   extra_packages: {}
-  package_set:
-    url: https://raw.githubusercontent.com/purescript/package-sets/psc-0.15.14-20240204/packages.json
