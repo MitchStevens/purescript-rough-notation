@@ -15,7 +15,6 @@ package:
       - web-html
       - partial
       - console
-
   bundle:
     minify: false
     module: Test.Main
@@ -23,7 +22,7 @@ package:
     platform: browser
     type: "app"
   publish:
-    version: 1.0.2
+    version: 1.0.0
     license: MIT
     include:
       - "src/**/*.purs src/**/*.js"
@@ -34,3 +33,4 @@ package:
 workspace:
   package_set:
     registry: 49.1.0
+  lock: true

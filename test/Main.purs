@@ -2,27 +2,23 @@ module Test.Main where
 
 import Prelude
 
-import Control.Monad.List.Trans (fromEffect)
-import Control.Monad.Maybe.Trans (MaybeT(..), runMaybeT)
 import Control.Parallel (parSequence_)
 import Data.Either (either)
 import Data.Maybe (fromJust)
 import Effect (Effect)
-import Effect.Aff (Aff, Milliseconds(..), parallel, runAff_, sequential, throwError)
+import Effect.Aff (Aff, Milliseconds(..), runAff_, throwError)
 import Effect.Aff.Class (liftAff)
 import Effect.Class (liftEffect)
-import Effect.Class.Console (log, logShow)
-import Partial.Unsafe (unsafeCrashWith, unsafePartial)
+import Effect.Class.Console (logShow)
+import Partial.Unsafe (unsafePartial)
 import RoughNotation (annotate, annotationGroup, hideAnnotation, showAnnotation)
-import RoughNotation.Config (BracketType(..), RoughAnnotationType, RoughPadding(..))
+import RoughNotation.Config (BracketType(..), RoughPadding(..))
 import RoughNotation.Config as RoughAnnotationType
-import Web.DOM.Document as Document
 import Web.DOM.Element (Element, toEventTarget, toParentNode)
 import Web.DOM.NonElementParentNode (getElementById)
 import Web.DOM.ParentNode (QuerySelector(..), querySelector)
 import Web.Event.EventTarget (addEventListener, eventListener)
 import Web.HTML (window)
-import Web.HTML.Event.EventTypes as EventType
 import Web.HTML.Event.EventTypes as EventTypes
 import Web.HTML.HTMLDocument (toNonElementParentNode)
 import Web.HTML.Window (document)
@@ -63,7 +59,7 @@ annotateUnderlineSection section = do
       , showAnnotation a2
       ]
 
-  liftEffect $ addEventListener EventType.click eventListener false (toEventTarget button)
+  liftEffect $ addEventListener EventTypes.click eventListener false (toEventTarget button)
 
 annotateBoxSection :: Partial => Element -> Aff Unit
 annotateBoxSection section = do
@@ -82,7 +78,7 @@ annotateBoxSection section = do
       , showAnnotation a2
       ]
 
-  liftEffect $ addEventListener EventType.click eventListener false (toEventTarget button)
+  liftEffect $ addEventListener EventTypes.click eventListener false (toEventTarget button)
 
 
 
@@ -103,7 +99,7 @@ annotateCircleSection section = do
       , showAnnotation a2
       ]
 
-  liftEffect $ addEventListener EventType.click eventListener false (toEventTarget button)
+  liftEffect $ addEventListener EventTypes.click eventListener false (toEventTarget button)
 
 annotateHighlightSection :: Partial => Element -> Aff Unit
 annotateHighlightSection section = do
@@ -122,7 +118,7 @@ annotateHighlightSection section = do
       , showAnnotation a2
       ]
 
-  liftEffect $ addEventListener EventType.click eventListener false (toEventTarget button)
+  liftEffect $ addEventListener EventTypes.click eventListener false (toEventTarget button)
 
 
 annotateStrikeThroughSection :: Partial => Element -> Aff Unit
@@ -142,7 +138,7 @@ annotateStrikeThroughSection section = do
       , showAnnotation a2
       ]
 
-  liftEffect $ addEventListener EventType.click eventListener false (toEventTarget button)
+  liftEffect $ addEventListener EventTypes.click eventListener false (toEventTarget button)
 
 
 annotateCrossedOffSection :: Partial => Element -> Aff Unit
@@ -162,7 +158,7 @@ annotateCrossedOffSection section = do
       , showAnnotation a2
       ]
 
-  liftEffect $ addEventListener EventType.click eventListener false (toEventTarget button)
+  liftEffect $ addEventListener EventTypes.click eventListener false (toEventTarget button)
 
 annotateBracketSection :: Partial => Element -> Aff Unit
 annotateBracketSection section = do
@@ -183,7 +179,7 @@ annotateBracketSection section = do
     hideAnnotation ag
     showAnnotation ag
 
-  liftEffect $ addEventListener EventType.click eventListener false (toEventTarget button)
+  liftEffect $ addEventListener EventTypes.click eventListener false (toEventTarget button)
 
 
 annotateMultilineSection :: Partial => Element -> Aff Unit
@@ -197,14 +193,13 @@ annotateMultilineSection section = do
     hideAnnotation a1
     showAnnotation a1
 
-  liftEffect $ addEventListener EventType.click eventListener false (toEventTarget button)
+  liftEffect $ addEventListener EventTypes.click eventListener false (toEventTarget button)
 
 annotateGroupSection :: Partial => Element -> Aff Unit
 annotateGroupSection section = do
   button <- fromJust <$> liftEffect (querySelector (QuerySelector "button") (toParentNode section))
   h3   <- fromJust <$> liftEffect (querySelector (QuerySelector "h3") (toParentNode section))
   span   <- fromJust <$> liftEffect (querySelector (QuerySelector "span") (toParentNode section))
-  i   <- fromJust <$> liftEffect (querySelector (QuerySelector "i") (toParentNode section))
 
   a1 <- annotate h3 RoughAnnotationType.Box { color: "#bf360C" }
   a2 <- annotate span RoughAnnotationType.Highlight { color: "#ffff00" }
@@ -215,7 +210,7 @@ annotateGroupSection section = do
     hideAnnotation ag
     showAnnotation ag
 
-  liftEffect $ addEventListener EventType.click eventListener false (toEventTarget button)
+  liftEffect $ addEventListener EventTypes.click eventListener false (toEventTarget button)
 
 annotateNoAnimationSection :: Partial => Element -> Aff Unit
 annotateNoAnimationSection section = do
@@ -234,7 +229,7 @@ annotateNoAnimationSection section = do
       , showAnnotation a2
       ]
 
-  liftEffect $ addEventListener EventType.click eventListener false (toEventTarget button)
+  liftEffect $ addEventListener EventTypes.click eventListener false (toEventTarget button)
 
 annotateConfigSection :: Partial => Element -> Aff Unit
 annotateConfigSection section = do
@@ -253,4 +248,4 @@ annotateConfigSection section = do
       , showAnnotation a2
       ]
 
-  liftEffect $ addEventListener EventType.click eventListener false (toEventTarget button)
+  liftEffect $ addEventListener EventTypes.click eventListener false (toEventTarget button)
