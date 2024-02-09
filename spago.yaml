@@ -1,13 +1,13 @@
 package:
   dependencies:
-    - aff: "*"
-    - datetime: "*"
-    - effect: "*"
-    - maybe: "*"
-    - nullable: "*"
-    - prelude: "*"
-    - unsafe-coerce: "*"
-    - web-dom: "*"
+    - aff: ">=7.1.0 <8.0.0"
+    - datetime: ">=6.1.0 <7.0.0"
+    - effect: ">=4.0.0 <5.0.0"
+    - maybe: ">=6.0.0 <7.0.0"
+    - nullable: ">=6.0.0 <7.0.0"
+    - prelude: ">=6.0.0 <7.0.0"
+    - unsafe-coerce: ">=6.0.0 <7.0.0"
+    - web-dom: ">=6.0.0 <7.0.0"
   name: rough-notation
   test:
     main: Test.Main
