@@ -14,6 +14,7 @@ package:
     dependencies:
       - web-html
       - partial
+      - console
 
   bundle:
     minify: false
@@ -31,4 +32,5 @@ package:
       githubRepo: purescript-rough-notation
 
 workspace:
-  extra_packages: {}
+  package_set:
+    registry: 49.1.0
