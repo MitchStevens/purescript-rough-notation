@@ -15,10 +15,8 @@ module RoughNotation
 
 import Prelude
 
-import Data.Int (toNumber)
 import Effect (Effect)
-import Effect.Aff (Aff, Milliseconds(..), delay)
-import Effect.Aff.Compat (EffectFnAff, fromEffectFnAff)
+import Effect.Aff (Aff, Milliseconds)
 import Effect.Class (liftEffect)
 import Prim.Row (class Union)
 import RoughNotation.Config (RoughAnnotationType, RoughAnnotationConfig, toNativeConfig)
