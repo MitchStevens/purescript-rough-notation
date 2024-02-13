@@ -22,7 +22,7 @@ package:
     platform: browser
     type: "app"
   publish:
-    version: 1.0.0
+    version: 1.0.1
     license: MIT
     include:
       - "src/**/*.purs src/**/*.js"
@@ -32,5 +32,5 @@ package:
 
 workspace:
   package_set:
-    registry: 49.1.0
+    registry: 50.0.0
   lock: true

@@ -1,16 +1,29 @@
-module RoughNotation where
+module RoughNotation
+  ( Annotation
+  , AnnotationGroup
+  , animationDuration
+  , annotate
+  , annotationGroup
+  , class RoughAnnotation
+  , hideAnnotation
+  , isShowing
+  , iterations
+  , removeAnnotation
+  , showAnnotation
+  )
+  where
 
 import Prelude
 
+import Data.Int (toNumber)
 import Effect (Effect)
 import Effect.Aff (Aff, Milliseconds(..), delay)
 import Effect.Aff.Compat (EffectFnAff, fromEffectFnAff)
 import Effect.Class (liftEffect)
+import Effect.Class.Console (log)
 import Prim.Row (class Union)
 import RoughNotation.Config (RoughAnnotationType, RoughAnnotationConfig, toNativeConfig)
 import Web.DOM (Element)
-
---data AnnotationState = Unattached | NotShowing | Showing
 
 foreign import data Annotation :: Type
 foreign import data AnnotationGroup :: Type
@@ -21,15 +34,16 @@ class RoughAnnotation a where
 
 instance RoughAnnotation Annotation where
   showAnnotation annotation = do
-    duration <- liftEffect (show_ annotation)
-    delay (Milliseconds duration)
+    --Milliseconds duration <- animationDuration annotation
+    --n <- iterations annotation
+    liftEffect (show_ annotation)
+    --delay $ Milliseconds (duration * toNumber n)
   hideAnnotation annotation = do
     liftEffect (hide_ annotation)
 
 instance RoughAnnotation AnnotationGroup where
   showAnnotation annotation = do
-    duration <- liftEffect (show_ annotation)
-    delay (Milliseconds duration)
+    liftEffect (show_ annotation)
   hideAnnotation annotation = do
     liftEffect (hide_ annotation)
 
@@ -40,12 +54,23 @@ annotate element roughAnnotationType config =
 
 foreign import annotationGroup_ :: Array Annotation -> Effect AnnotationGroup
 annotationGroup :: Array Annotation -> Aff AnnotationGroup
-annotationGroup annotations = liftEffect (annotationGroup_ annotations)
+annotationGroup = liftEffect <<< annotationGroup_
 
-foreign import show_ :: forall a. a -> Effect Number
-
+foreign import show_ :: forall a. a -> Effect Unit
 foreign import hide_ :: forall a. a -> Effect Unit
+
+foreign import isShowing_ :: Annotation -> Effect Boolean
+isShowing :: Annotation -> Aff Boolean
+isShowing = liftEffect <<< isShowing_
+
+foreign import animationDuration_ :: Annotation -> Effect Milliseconds
+animationDuration :: Annotation -> Aff Milliseconds
+animationDuration = liftEffect <<< animationDuration_
+
+foreign import iterations_ :: Annotation -> Effect Int
+iterations :: Annotation -> Aff Int
+iterations = liftEffect <<< iterations_
 
 foreign import remove_ :: Annotation -> Effect Unit
 removeAnnotation :: Annotation -> Aff Unit
-removeAnnotation annotation = liftEffect (remove_ annotation)
+removeAnnotation = liftEffect <<< remove_

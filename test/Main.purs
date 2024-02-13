@@ -38,7 +38,6 @@ main = runAff_ (either throwError logShow) $ unsafePartial do
   lookupSection "bracketSection" >>= annotateBracketSection
   lookupSection "multilineSection" >>= annotateMultilineSection
   lookupSection "groupSection" >>= annotateGroupSection
-
   lookupSection "configSection" >>= annotateConfigSection
   lookupSection "noanimSection" >>= annotateNoAnimationSection
 

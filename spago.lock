@@ -71,7 +71,7 @@ workspace:
         - web-storage
   package_set:
     address:
-      registry: 49.1.0
+      registry: 50.0.0
     compiler: ">=0.15.14 <0.16.0"
     content:
       abc-parser: 2.0.1
@@ -125,7 +125,7 @@ workspace:
       chameleon-transformers: 1.0.0
       channel: 1.0.0
       checked-exceptions: 3.1.1
-      choku: 0.2.2
+      choku: 1.0.1
       classless: 0.1.1
       classless-arbitrary: 0.1.1
       classless-decode-json: 0.1.1
@@ -429,6 +429,7 @@ workspace:
       return: 0.2.0
       ring-modules: 5.0.1
       rito: 0.3.4
+      rough-notation: 1.0.0
       routing: 11.0.0
       routing-duplex: 0.7.0
       run: 5.0.0

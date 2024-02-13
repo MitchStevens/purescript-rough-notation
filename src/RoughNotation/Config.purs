@@ -1,20 +1,27 @@
-module RoughNotation.Config where
+module RoughNotation.Config
+  ( BracketType(..)
+  , RoughAnnotationConfig
+  , RoughAnnotationType(..)
+  , RoughPadding(..)
+  , toNativeConfig
+  )
+  where
 
 import Prelude
 
 import Data.Maybe (maybe)
 import Data.Nullable (Nullable, toMaybe)
-import Data.Time.Duration (Milliseconds(..))
+import Data.Time.Duration (Milliseconds)
 import Prim.Row (class Union)
 import Record.Unsafe (unsafeGet, unsafeSet)
 import Unsafe.Coerce (unsafeCoerce)
 
-type Rect =
-  { x :: Number
-  , y :: Number
-  , w :: Number
-  , h :: Number
-  }
+--type Rect =
+--  { x :: Number
+--  , y :: Number
+--  , w :: Number
+--  , h :: Number
+--  }
 
 data RoughAnnotationType = Underline | Box | Circle | Highlight | StrikeThrough | CrossedOff | Bracket
 instance Show RoughAnnotationType where
