@@ -550,7 +550,8 @@ workspace:
       yoga-tree: 1.0.0
       z3: 0.0.2
       zipperarray: 2.0.0
-  extra_packages: {}
+  extra_packages:
+    parallel: 6.0.0
 packages:
   aff:
     type: registry
@@ -922,8 +923,8 @@ packages:
       - prelude
   parallel:
     type: registry
-    version: 7.0.0
-    integrity: sha256-gUC9i4Txnx9K9RcMLsjujbwZz6BB1bnE2MLvw4GIw5o=
+    version: 6.0.0
+    integrity: sha256-VJbkGD0rAKX+NUEeBJbYJ78bEKaZbgow+QwQEfPB6ko=
     dependencies:
       - control
       - effect
