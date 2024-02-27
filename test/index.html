@@ -84,6 +84,29 @@
     section {
       padding: 32px 0;
     }
+
+    section:nth-child(3n) { background: rgb(255, 235, 184) }
+    section:nth-child(3n+1) { background: rgb(192, 233, 148) }
+    section:nth-child(3n+2) { background: rgb(164, 201, 255) }
+
+
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #f36d33;
+      color: #666;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 12px;
+      line-height: 1.6;
+      margin-bottom: 1.6em;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+
   </style>
 
   <script defer src="./script.js"></script>
@@ -116,7 +139,7 @@
       to see the animated annotation</p>
   </header>
   <main>
-    <section id="underlineSection" style="background: #FFEBEE;">
+    <section id="underlineSection" >
       <div class="sizedPanel">
         <h3>Underline</h3>
         <p>Create a sketchy <span>underline</span> below an element.</p>
@@ -125,7 +148,7 @@
         </p>
       </div>
     </section>
-    <section id="boxSection" style="background: #F3E5F5;">
+    <section id="boxSection" >
       <div class="sizedPanel">
         <h3>Box</h3>
         <p>This style draws a <span>box</span> around the element.</p>
@@ -134,7 +157,7 @@
         </p>
       </div>
     </section>
-    <section id="circleSection" style="background: #E3F2FD;">
+    <section id="circleSection" >
       <div class="sizedPanel">
         <h3>Circle</h3>
         <p>Draw a <span>circle</span> around the element.</p>
@@ -143,7 +166,7 @@
         </p>
       </div>
     </section>
-    <section id="highlightSection" style="background: #f5f5f5;">
+    <section id="highlightSection" >
       <div class="sizedPanel">
         <h3>Highlight</h3>
         <p>Creates a highlight effect as if marked by a <span>highlighter</span>.</p>
@@ -152,7 +175,7 @@
         </p>
       </div>
     </section>
-    <section id="strikeSection" style="background: #E8F5E9;">
+    <section id="strikeSection" >
       <div class="sizedPanel">
         <h3>Strike-Through</h3>
         <p>Draw a hand-drawn line through an element creating a <span>stroke-through</span> effect.</p>
@@ -161,7 +184,7 @@
         </p>
       </div>
     </section>
-    <section id="crossSection" style="background: #E0F2F1;">
+    <section id="crossSection" >
       <div class="sizedPanel">
         <h3>Crossed-Off</h3>
         <p>To symbolize rejection, use a <span>crossed-off</span> effect on an element.</p>
@@ -170,7 +193,7 @@
         </p>
       </div>
     </section>
-    <section id="bracketSection" style="background: #FFFDE7;">
+    <section id="bracketSection" >
       <div class="sizedPanel">
         <h3>Brackets</h3>
         <p>Create a hand-drawn bracket around a block (like a paragraph of text) on one or multiple sides of the block.
@@ -186,7 +209,7 @@
         </p>
       </div>
     </section>
-    <section id="multilineSection" style="background: #FFF8F1;">
+    <section id="multilineSection" >
       <div class="sizedPanel">
         <h3>Multiple lines</h3>
         <p>Ability to annotate inline content that can span multiple lines</p>
@@ -204,18 +227,7 @@
         </p>
       </div>
     </section>
-    <section id="groupSection" style="background: #FBE9E7;">
-      <div class="sizedPanel">
-        <h3>Annotation Group</h3>
-        <p>Rough Notation provides a way to order the animation of annotations by creating an
-          <span>annotation-group</span>. Pass the list of annotations to create a group.
-          When <i>show</i> is called on the group, the annotations are animated in order.</p>
-        <p>
-          <button>annotate</button>
-        </p>
-      </div>
-    </section>
-    <section id="configSection" style="background: #FFF3E0;">
+    <section id="configSection" >
       <div class="sizedPanel">
         <h3>Annotation Styling</h3>
         <p>Various properties of the annotation can be configured, like color, strokeWidth, <span>animation
@@ -226,7 +238,7 @@
         </p>
       </div>
     </section>
-    <section id="noanimSection" style="background: #ECEFF1;">
+    <section id="noanimSection" >
       <div class="sizedPanel">
         <h3>No Animation</h3>
         <p>Of course you don't have to animate the annotation, it just shows up when <i>show</i> is called.</p>
@@ -235,26 +247,40 @@
         </p>
       </div>
     </section>
+    <section id="durationSection">
+      <div class="sizedPanel">
+        <h3><span>Sequencing</span> <span>Annotations</span> using <span>Aff</span></h3>
+        <p>When using <a href="">purescript-rough-annotation</a>, all annotation actions are performed inside <a>Aff</a> and will block until the annotation action is completed. This means that annotations can be scheduled with the expressiveness that the <a>purescript-aff</a> library provides.</p>
+        </p>
+        <div>
+          <button>annotate<br>in parallel</button>
+          <button>annotate<br>in sequence</button>
+          <button>annotate<br>in reverse</button>
+          <button>annotate<br>staggered</button>
+        </div>
+        <p>
+          Since composing annotations is done via aff, the <code>AnnotationGroup</code> construct from Rough Annotations is no longer needed
+        </p>
+        <pre><code>-- in parallel
+traverse_ showAnnotation annotations
+
+-- in sequence
+parTraverse_ showAnnotation annotations
+
+-- in reverse
+traverse_ showAnnotation (Array.reverse annotations)
+
+-- stagger
+sequential $
+  forWithIndex_ annotations \i a ->
+    parallel do
+      (delay (Milliseconds (toNumber i * 200.0)))
+      showAnnotation a </code></pre>
+      </div>
+    </section>
     <section>
       <div class="sizedPanel">
-        <p>&nbsp;</p>
-        <p>
-          All the code and documentation is available on Github.
-        </p>
-        <p>
-          <a target="_blank" href="https://github.com/pshihn/rough-notation" rel="noopener">
-            <button>View on Github</button>
-          </a>
-        </p>
-        <p>
-          <a target="_blank" href="https://opencollective.com/rough" rel="noopener">
-            <button>Sponsor this project</button>
-          </a>
-        </p>
-        <p>
-          Reach out on twitter <a style="color: #0d47a1; font-weight: bold;" href="https://twitter.com/preetster"
-            target="_blank" rel="noopener">@preetster</a>
-        </p>
+        <p>All of these examples come directly from the Rough Annotation home page</p>  
       </div>
     </section>
   </main>

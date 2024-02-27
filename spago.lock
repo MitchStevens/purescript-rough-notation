@@ -9,6 +9,7 @@ workspace:
         - maybe: ">=6.0.0 <7.0.0"
         - nullable: ">=6.0.0 <7.0.0"
         - prelude: ">=6.0.0 <7.0.0"
+        - record: ">=4.0.0 <5.0.0"
         - unsafe-coerce: ">=6.0.0 <7.0.0"
         - web-dom: ">=6.0.0 <7.0.0"
       test_dependencies:
@@ -55,6 +56,7 @@ workspace:
         - partial
         - prelude
         - profunctor
+        - record
         - refs
         - safe-coerce
         - st
@@ -960,6 +962,14 @@ packages:
       - newtype
       - prelude
       - tuples
+  record:
+    type: registry
+    version: 4.0.0
+    integrity: sha256-Za5U85bTRJEfGK5Sk4hM41oXy84YQI0I8TL3WUn1Qzg=
+    dependencies:
+      - functions
+      - prelude
+      - unsafe-coerce
   refs:
     type: registry
     version: 6.0.0

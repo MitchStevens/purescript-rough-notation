@@ -1,8 +1,11 @@
 module RoughNotation.Config
   ( BracketType(..)
-  , RoughAnnotationConfig
+  , Config
+  , ConfigRows
+  , NativeConfig
   , RoughAnnotationType(..)
   , RoughPadding(..)
+  , defaultConfig
   , toNativeConfig
   )
   where
@@ -11,17 +14,11 @@ import Prelude
 
 import Data.Maybe (maybe)
 import Data.Nullable (Nullable, toMaybe)
-import Data.Time.Duration (Milliseconds)
+import Data.Time.Duration (Milliseconds(..))
 import Prim.Row (class Union)
 import Record.Unsafe (unsafeGet, unsafeSet)
 import Unsafe.Coerce (unsafeCoerce)
 
---type Rect =
---  { x :: Number
---  , y :: Number
---  , w :: Number
---  , h :: Number
---  }
 
 data RoughAnnotationType = Underline | Box | Circle | Highlight | StrikeThrough | CrossedOff | Bracket
 instance Show RoughAnnotationType where
@@ -52,8 +49,7 @@ instance Show BracketType where
     Top -> "top"
     Bottom -> "bottom"
 
-
-type RoughAnnotationConfig =
+type ConfigRows =
   ( animate :: Boolean
   , animationDuration :: Milliseconds
   , color :: String
@@ -65,7 +61,36 @@ type RoughAnnotationConfig =
   , rtl :: Boolean
   )
 
-toNativeConfig :: forall config rest config'. Union config rest RoughAnnotationConfig => Record config -> Record config'
+type Config = Record ConfigRows
+
+defaultConfig ::  Config
+defaultConfig =
+  { animate: true
+  , animationDuration: Milliseconds 800.0
+  , color: "black"
+  , strokeWidth: 2.0
+  , padding: Padding 5.0
+  , iterations: 2
+  , brackets: [Right]
+  , multiline: false
+  , rtl: false
+  }
+
+-- | for type safety reasons, the config that this purescript library uses is slightly different to the rough-notation expects. The type of config that rough-notation requires is called "NativeConfig"
+
+type NativeConfig = 
+  { animate :: Boolean
+  , animationDuration :: Milliseconds
+  , color :: String
+  , strokeWidth :: Number
+  , padding :: Array Number
+  , iterations :: Int
+  , brackets :: Array String
+  , multiline :: Boolean
+  , rtl :: Boolean
+  }
+
+toNativeConfig :: Config -> NativeConfig
 toNativeConfig config =
   let (padding :: Nullable RoughPadding) = unsafeGet "padding" config
       (bracketType :: Nullable (Array BracketType)) = unsafeGet "brackets" config

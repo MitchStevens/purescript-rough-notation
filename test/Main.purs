@@ -2,21 +2,28 @@ module Test.Main where
 
 import Prelude
 
-import Control.Parallel (parSequence_)
+import Control.Parallel (parSequence_, parTraverse_, parallel, sequential)
+import Data.Array as Array
 import Data.Either (either)
+import Data.Foldable (for_, traverse_)
+import Data.FoldableWithIndex (forWithIndex_)
+import Data.Int (toNumber)
 import Data.Maybe (fromJust)
+import Data.Traversable (for, traverse)
 import Effect (Effect)
-import Effect.Aff (Aff, Milliseconds(..), runAff_, throwError)
+import Effect.Aff (Aff, Milliseconds(..), delay, runAff_, throwError)
 import Effect.Aff.Class (liftAff)
 import Effect.Class (liftEffect)
 import Effect.Class.Console (logShow)
 import Partial.Unsafe (unsafePartial)
-import RoughNotation (annotate, annotationGroup, hideAnnotation, showAnnotation)
-import RoughNotation.Config (BracketType(..), RoughPadding(..))
+import RoughNotation (annotate, hideAnnotation, showAnnotation)
+import RoughNotation.Config (BracketType(..), RoughAnnotationType, RoughPadding(..))
 import RoughNotation.Config as RoughAnnotationType
 import Web.DOM.Element (Element, toEventTarget, toParentNode)
+import Web.DOM.Element as Element
+import Web.DOM.NodeList as NodeList
 import Web.DOM.NonElementParentNode (getElementById)
-import Web.DOM.ParentNode (QuerySelector(..), querySelector)
+import Web.DOM.ParentNode (QuerySelector(..), querySelector, querySelectorAll)
 import Web.Event.EventTarget (addEventListener, eventListener)
 import Web.HTML (window)
 import Web.HTML.Event.EventTypes as EventTypes
@@ -37,9 +44,10 @@ main = runAff_ (either throwError logShow) $ unsafePartial do
   lookupSection "crossSection" >>= annotateCrossedOffSection
   lookupSection "bracketSection" >>= annotateBracketSection
   lookupSection "multilineSection" >>= annotateMultilineSection
-  lookupSection "groupSection" >>= annotateGroupSection
   lookupSection "configSection" >>= annotateConfigSection
   lookupSection "noanimSection" >>= annotateNoAnimationSection
+
+  lookupSection "durationSection" >>= annotateSequenceSection
 
 annotateUnderlineSection :: Partial => Element -> Aff Unit
 annotateUnderlineSection section = do
@@ -172,11 +180,11 @@ annotateBracketSection section = do
   a2 <- liftAff $ annotate h3 RoughAnnotationType.Bracket
           { color: "red"
           , strokeWidth: 2.0, brackets: [Top]}
-  ag <- annotationGroup [a1, a2]
+  let ag = [a1, a2]
 
   eventListener <- liftEffect $ eventListener \_ -> runAff_ (\_ -> pure unit) do
-    hideAnnotation ag
-    showAnnotation ag
+    parTraverse_ hideAnnotation ag
+    parTraverse_ showAnnotation ag
 
   liftEffect $ addEventListener EventTypes.click eventListener false (toEventTarget button)
 
@@ -191,23 +199,6 @@ annotateMultilineSection section = do
   eventListener <- liftEffect $ eventListener \_ -> runAff_ (\_ -> pure unit) do
     hideAnnotation a1
     showAnnotation a1
-
-  liftEffect $ addEventListener EventTypes.click eventListener false (toEventTarget button)
-
-annotateGroupSection :: Partial => Element -> Aff Unit
-annotateGroupSection section = do
-  button <- fromJust <$> liftEffect (querySelector (QuerySelector "button") (toParentNode section))
-  h3   <- fromJust <$> liftEffect (querySelector (QuerySelector "h3") (toParentNode section))
-  span   <- fromJust <$> liftEffect (querySelector (QuerySelector "span") (toParentNode section))
-
-  a1 <- annotate h3 RoughAnnotationType.Box { color: "#bf360C" }
-  a2 <- annotate span RoughAnnotationType.Highlight { color: "#ffff00" }
-  a3 <- annotate span RoughAnnotationType.Underline { color: "#bf360c", animationDuration: Milliseconds 300.0 }
-  ag <- annotationGroup [a2, a3, a1]
-
-  eventListener <- liftEffect $ eventListener \_ -> runAff_ (\_ -> pure unit) do
-    hideAnnotation ag
-    showAnnotation ag
 
   liftEffect $ addEventListener EventTypes.click eventListener false (toEventTarget button)
 
@@ -248,3 +239,35 @@ annotateConfigSection section = do
       ]
 
   liftEffect $ addEventListener EventTypes.click eventListener false (toEventTarget button)
+
+annotateSequenceSection :: Partial => Element -> Aff Unit
+annotateSequenceSection section = do
+  let fromNode = fromJust <<< Element.fromNode
+
+  --buttonNodeList <- liftEffect (querySelectorAll (QuerySelector "button") (toParentNode section))
+  --[ parallelButton, sequenceButton, reverseButton ] <- liftEffect $ NodeList.toArray buttonNodeList
+  [ parallelButton, sequenceButton, reverseButton, staggeredButton ] <- liftEffect (querySelectorAll (QuerySelector "button") (toParentNode section) >>= NodeList.toArray)
+  elements <- liftEffect (querySelectorAll (QuerySelector "span") (toParentNode section) >>= NodeList.toArray)
+  annotations <- for elements \word ->
+    annotate (fromNode word) RoughAnnotationType.Box { color: "#D50000", strokeWidth: 2.0 }
+
+  let
+    addOnClickEventListener button action = do
+      eventListener <- liftEffect $ eventListener \_ -> runAff_ (\_ -> pure unit) do
+        traverse_ hideAnnotation annotations
+        action
+      liftEffect $ addEventListener EventTypes.click eventListener false (toEventTarget button)
+
+  addOnClickEventListener (fromNode sequenceButton) (traverse_ showAnnotation annotations)
+  addOnClickEventListener (fromNode parallelButton) (parTraverse_ showAnnotation annotations)
+  addOnClickEventListener (fromNode reverseButton) (traverse_ showAnnotation (Array.reverse annotations))
+  addOnClickEventListener (fromNode staggeredButton) $ sequential $
+    forWithIndex_ annotations \i a ->
+      parallel do
+        (delay (Milliseconds (toNumber i * 400.0)))
+        showAnnotation a
+      
+  
+
+
+
