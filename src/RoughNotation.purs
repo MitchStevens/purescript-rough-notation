@@ -12,7 +12,7 @@ module RoughNotation
 import Prelude
 
 import Effect (Effect)
-import Effect.Aff (Aff, Milliseconds(..), delay)
+import Effect.Aff (Aff, Canceler(..), Milliseconds(..), cancelWith, delay)
 import Effect.Class (liftEffect)
 import Prim.Row (class Nub, class Union)
 import Record as Record
@@ -36,22 +36,24 @@ annotate element roughAnnotationType config =
 foreign import show_ :: forall a. a -> Effect Unit
 -- | Shows annotation, blocks until annotation is completed
 showAnnotation :: Annotation -> Aff Unit
-showAnnotation annotation = do
-  Milliseconds duration <- animationDuration annotation
-  liftEffect (show_ annotation)
-  delay (Milliseconds duration)
-
+showAnnotation annotation = show `cancelWith` Canceler \_ -> removeAnnotation annotation
+  where
+    show = do
+      Milliseconds duration <- animationDuration annotation
+      liftEffect (show_ annotation)
+      delay (Milliseconds duration)
 
 foreign import hide_ :: forall a. a -> Effect Unit
 -- | Hides annotation, annotation can be shown again
 hideAnnotation :: Annotation -> Aff Unit
-hideAnnotation annotation = do
-  liftEffect (hide_ annotation)
+hideAnnotation annotation =
+  liftEffect (hide_ annotation) `cancelWith` Canceler \_ -> removeAnnotation annotation
 
 foreign import remove_ :: Annotation -> Effect Unit
 -- | Removes annotation, annotation cannot be run again
 removeAnnotation :: Annotation -> Aff Unit
 removeAnnotation = liftEffect <<< remove_
+
 
 foreign import animationDuration_ :: Annotation -> Effect Milliseconds
 -- | total duration of an annotation, used to block Aff while annotation is running
