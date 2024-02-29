@@ -2,17 +2,17 @@ module RoughNotation
   ( Annotation
   , animationDuration
   , annotate
-  --, annotationGroup
   , hideAnnotation
   , removeAnnotation
   , showAnnotation
+  , withAnnotation
   )
   where
 
 import Prelude
 
 import Effect (Effect)
-import Effect.Aff (Aff, Canceler(..), Milliseconds(..), cancelWith, delay)
+import Effect.Aff (Aff, Canceler(..), Milliseconds(..), bracket, cancelWith, delay)
 import Effect.Class (liftEffect)
 import Prim.Row (class Nub, class Union)
 import Record as Record
@@ -59,3 +59,8 @@ foreign import animationDuration_ :: Annotation -> Effect Milliseconds
 -- | total duration of an annotation, used to block Aff while annotation is running
 animationDuration :: Annotation -> Aff Milliseconds
 animationDuration = liftEffect <<< animationDuration_
+
+-- | Ensures that all the annotation is removed after display
+withAnnotation :: Annotation -> (Annotation -> Aff Unit) -> Aff Unit
+withAnnotation annotation f = bracket (pure annotation) f removeAnnotation
+
