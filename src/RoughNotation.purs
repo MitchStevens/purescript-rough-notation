@@ -61,6 +61,6 @@ animationDuration :: Annotation -> Aff Milliseconds
 animationDuration = liftEffect <<< animationDuration_
 
 -- | Ensures that all the annotation is removed after display
-withAnnotation :: Annotation -> (Annotation -> Aff Unit) -> Aff Unit
-withAnnotation annotation f = bracket (pure annotation) f removeAnnotation
+withAnnotation :: Aff Annotation -> (Annotation -> Aff Unit) -> Aff Unit
+withAnnotation annotation f = bracket annotation f removeAnnotation
 
