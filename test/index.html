@@ -278,6 +278,22 @@ sequential $
       showAnnotation a </code></pre>
       </div>
     </section>
+    <section id="withAnnotationSection">
+      <div class="sizedPanel">
+        <h1>Automatic clean-up</h1>
+        <p>Ensure that annotations <span>don't escape scope</span> by using <code>withAnnotation</code>! Runs <code>removeAnnotation</code> at the end of the code block to ensure that annotations can't accidentally be run again!</p>  
+
+        <pre><code>-- withAnnotation :: Aff Annotation -> (Annotation -> Aff a) -> Aff Unit
+
+withAnnotation (boxAnnotation) \annotation -> do
+  showAnnotation annotation
+  delay (Milliseconds 1000.0)
+  hideAnnotation annotation
+  showAnnotation annotation</code></pre>
+
+        <button>annotate</button>
+      </div>
+    </section>
     <section>
       <div class="sizedPanel">
         <p>All of these examples come directly from the Rough Annotation home page</p>  

@@ -14,9 +14,9 @@ import Effect (Effect)
 import Effect.Aff (Aff, Milliseconds(..), delay, runAff_, throwError)
 import Effect.Aff.Class (liftAff)
 import Effect.Class (liftEffect)
-import Effect.Class.Console (logShow)
+import Effect.Class.Console (log, logShow)
 import Partial.Unsafe (unsafePartial)
-import RoughNotation (annotate, hideAnnotation, showAnnotation)
+import RoughNotation (annotate, hideAnnotation, showAnnotation, withAnnotation)
 import RoughNotation.Config (BracketType(..), RoughAnnotationType, RoughPadding(..))
 import RoughNotation.Config as RoughAnnotationType
 import Web.DOM.Element (Element, toEventTarget, toParentNode)
@@ -46,8 +46,9 @@ main = runAff_ (either throwError logShow) $ unsafePartial do
   lookupSection "multilineSection" >>= annotateMultilineSection
   lookupSection "configSection" >>= annotateConfigSection
   lookupSection "noanimSection" >>= annotateNoAnimationSection
-
   lookupSection "durationSection" >>= annotateSequenceSection
+
+  lookupSection "withAnnotationSection" >>= withAnnotationSection
 
 annotateUnderlineSection :: Partial => Element -> Aff Unit
 annotateUnderlineSection section = do
@@ -268,6 +269,20 @@ annotateSequenceSection section = do
         showAnnotation a
       
   
+withAnnotationSection :: Partial => Element -> Aff Unit
+withAnnotationSection section = do
+  button <- fromJust <$> liftEffect (querySelector (QuerySelector "button") (toParentNode section))
+  span   <- fromJust <$> liftEffect (querySelector (QuerySelector "span") (toParentNode section))
+
+  eventListener <- liftEffect $ eventListener \_ -> runAff_ (\_ -> pure unit) do
+    let boxAnnotation = annotate span RoughAnnotationType.Box { color: "#D50000", strokeWidth: 10.0 }
+    withAnnotation boxAnnotation \annotation -> do
+      showAnnotation annotation
+      delay (Milliseconds 1000.0)
+      hideAnnotation annotation
+      showAnnotation annotation
+
+  liftEffect $ addEventListener EventTypes.click eventListener false (toEventTarget button)
 
 
 

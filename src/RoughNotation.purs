@@ -12,8 +12,9 @@ module RoughNotation
 import Prelude
 
 import Effect (Effect)
-import Effect.Aff (Aff, Canceler(..), Milliseconds(..), bracket, cancelWith, delay)
+import Effect.Aff (Aff, Canceler(..), Milliseconds(..), bracket, cancelWith, delay, finally)
 import Effect.Class (liftEffect)
+import Effect.Class.Console (log)
 import Prim.Row (class Nub, class Union)
 import Record as Record
 import RoughNotation.Config (Config, NativeConfig, RoughAnnotationType, ConfigRows, defaultConfig, toNativeConfig)
@@ -62,5 +63,22 @@ animationDuration = liftEffect <<< animationDuration_
 
 -- | Ensures that all the annotation is removed after display
 withAnnotation :: Aff Annotation -> (Annotation -> Aff Unit) -> Aff Unit
-withAnnotation annotation f = bracket annotation f removeAnnotation
+withAnnotation annotation f = do
+  a <- annotation
+  finally (removeAnnotation a) (f a)
 
+  --bracket
+  --  (annotation <* log "got annotation") 
+  --  (\a -> log "using annotation" *> f a <* log "finished with annotation")
+  --  (\a -> removeAnnotation a <* log "annotation removed")
+
+--type BracketConditions a b =
+--  { killed :: Error -> a -> Aff Unit
+--  , failed :: Error -> a -> Aff Unit
+--  , completed :: b -> a -> Aff Unit
+--  }
+--
+---- | A general purpose bracket which lets you observe the status of the
+---- | bracketed action. The bracketed action may have been killed with an
+---- | exception, thrown an exception, or completed successfully.
+--foreign import generalBracket :: forall a b. Aff a -> BracketConditions a b -> (a -> Aff b) -> Aff b
